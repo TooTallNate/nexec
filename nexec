@@ -1,0 +1,53 @@
+#!/bin/bash
+# Runs the given command on the remote server.
+#
+# Examples:
+#   $ nexec ls
+#   $ nexec env
+#   $ cat foo.sh | nexec bash
+#   $ echo '{"foo":"bar"}' | nexec jq -r '.foo'
+
+set -ueo pipefail
+
+urlencode() {
+  local length="${#1}"
+  for (( i = 0; i < length; i++ )); do
+    local c="${1:i:1}"
+    case $c in
+      [a-zA-Z0-9.~_-]) printf "$c" ;;
+      *) printf '%%%02X' "'$c"
+    esac
+  done
+}
+
+cmd="$(urlencode "$1")"
+shift
+
+# https://stackoverflow.com/a/17841619/376773
+join_by() { local IFS="$1"; shift; echo "$*"; }
+
+args=("exit=1")
+while [ $# -gt 0 ]; do
+  args+=("arg=$(urlencode "$1")")
+  shift
+done
+
+curl_args=()
+if [ ! -t 0 ]; then
+  curl_args+=("--data-binary" "@-" "--header" "Transfer-Encoding: chunked")
+  #curl_args+=("--data-binary" "@-")
+fi
+
+nexec_host="${NEXEC_HOST-https://nexec.n8.io}"
+query="$(join_by '&' ${args[@]+"${args[@]}"})"
+
+exec 6>&1 # save stdout to fd 6
+exit_code=$(curl \
+  -sS \
+  --no-buffer \
+  --http1.0 \
+  ${curl_args[@]+"${curl_args[@]}"} \
+  ${NEXEC_CURL_ARGS-} \
+  "${nexec_host}/${cmd}?${query}" | tee >(awk 'NR>1{print buf}{buf = $0}' >&6) | tail -n 1)
+exec 6>&- # close fd 6
+exit "${exit_code}"
