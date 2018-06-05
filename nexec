@@ -35,7 +35,6 @@ done
 curl_args=()
 if [ ! -t 0 ]; then
   curl_args+=("--data-binary" "@-" "--header" "Transfer-Encoding: chunked")
-  #curl_args+=("--data-binary" "@-")
 fi
 
 nexec_host="${NEXEC_HOST-https://nexec.n8.io}"
