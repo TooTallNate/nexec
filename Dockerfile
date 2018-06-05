@@ -1,4 +1,4 @@
-FROM tootallnate/bashttpd:1.0.1
+FROM tootallnate/bashttpd:1.1.0
 
 # Install some extra CLI tools to invoke
 USER root
