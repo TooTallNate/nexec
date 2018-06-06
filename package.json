@@ -1,0 +1,24 @@
+{
+  "name": "nexec",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "next build && next export -o demo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TooTallNate/nexec.git"
+  },
+  "author": "Nathan Rajlich <n@n8.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TooTallNate/nexec/issues"
+  },
+  "homepage": "https://github.com/TooTallNate/nexec#readme",
+  "dependencies": {
+    "next": "^6.0.3",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
+  }
+}
