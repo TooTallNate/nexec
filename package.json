@@ -1,8 +1,7 @@
 {
   "name": "nexec",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.0",
+  "bin": "./nexec",
   "scripts": {
     "build": "next build && next export -o demo"
   },
