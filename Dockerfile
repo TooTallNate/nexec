@@ -5,14 +5,14 @@ FROM mhart/alpine-node:10.3.0 as static
 WORKDIR /usr/src
 COPY package.json next.config.js ./
 RUN npm install
-COPY pages ./pages
+COPY . .
 RUN npm run build
 
 FROM base
 # Install some extra CLI tools to invoke
 USER root
 RUN apk add --no-cache jq curl libstdc++
-RUN curl -Ls install-node.now.sh | sh -s -- --yes
+RUN curl -Ls install-node.now.sh | sh -s -- --yes --version=10.4.0
 RUN npm install --global --unsafe-perm semver
 
 COPY bashttpd.conf /etc/bashttpd/
