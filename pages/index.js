@@ -4,7 +4,8 @@ import Head from 'next/head';
 import Router from 'next/router';
 import createDebug from 'debug';
 
-import parseCommand from '../parse-command';
+import popup from '../lib/popup';
+import parseCommand from '../lib/parse-command';
 
 const debug = createDebug('nexec');
 
@@ -13,6 +14,8 @@ const examples = [
   { command: 'cat', stdin: 'Hello World!' },
   { command: 'jq -r .[].version', stdin_url: 'https://nodejs.org/dist/index.json' },
 ];
+
+
 
 export default class extends React.Component {
   static getInitialProps() {
@@ -81,10 +84,11 @@ export default class extends React.Component {
   onSubmit(e) {
     e.preventDefault();
     if (this.metaKey) {
-      window.open(
+      popup(
         this.refs.link.href,
         'nexec',
-        'menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes,width=500,height=600'
+        800,
+        600
       );
     } else {
       window.location = this.refs.link.href;
