@@ -1,5 +1,6 @@
 {
   "type": "docker",
+  "alias": "nexec.n8.io",
   "features": {
     "cloud": "v2"
   }
