@@ -2,13 +2,16 @@ import url from 'url';
 import qs from 'querystring';
 import Head from 'next/head';
 import Router from 'next/router';
+import createDebug from 'debug';
+
 import parseCommand from '../parse-command';
 
+const debug = createDebug('nexec');
+
 const examples = [
-  {
-    command: 'cat',
-    stdin: 'Hello World!'
-  }
+  { command: 'echo Hello World!' },
+  { command: 'cat', stdin: 'Hello World!' },
+  { command: 'jq -r .[].version', stdin_url: 'https://nodejs.org/dist/index.json' },
 ];
 
 export default class extends React.Component {
@@ -20,45 +23,70 @@ export default class extends React.Component {
     super(...args);
     this.state = { host: 'nexec.n8.io', command: '' };
     this.onChange = this.onChange.bind(this);
+    this.showExample = this.showExample.bind(this);
     if (typeof location !== 'undefined') {
       const query = qs.parse(location.search.substring(1));
       Object.assign(this.state, query, {
         host: location.host,
       });
     }
+    debug('Initial state: %o', this.state);
   }
 
   componentWillReceiveProps({url: {query}}) {
     delete query.host;
     if (!query.command) query.command = '';
+    if (!query.stdin) query.stdin = '';
+    if (!query.stdin_url) query.stdin_url = '';
     this.setState(query);
   }
 
-  async onChange(e) {
+  showExample(e) {
     e.preventDefault();
-    const command = e.currentTarget[0].value;
-    const queryObj = {};
-    if (command) {
-      queryObj.command = command;
-    }
+    const example = examples[Math.floor(Math.random() * examples.length)];
+    this.setCommand(example);
+  }
+
+  setCommand(queryObj) {
     const query = qs.stringify(queryObj);
     const page = `/${query ? '?'+query : ''}`;
     const as = `${location.pathname}?${query}`;
+
+    const { command = '' } = queryObj;
+    if (this.refs.command.value !== command) {
+      this.refs.command.value = command;
+      this.refs.command.focus();
+    }
+
     Router.replace(page, as, {shallow: true});
   }
 
+  async onChange(e) {
+    const command = this.refs.command.value;
+    const query = {};
+    if (command) query.command = command;
+    this.setCommand(query);
+  }
+
   render() {
+    const {stdin, stdin_url} = this.state;
     const [command = '', ...arg] = parseCommand(this.state.command);
     const cmd = encodeURIComponent(command);
-    const query = {
-      arg,
-    };
+    const query = {};
+    if (arg.length > 0) query.arg = arg;
+    if (stdin) query.stdin = stdin;
+    if (stdin_url) query.stdin_url = stdin_url;
     const queryStr = qs.stringify(query);
+    console.log({queryStr, query});
     const href = `/${cmd}${queryStr ? '?'+queryStr : ''}`
     let title = `${this.state.host}`;
-    if (href !== '/') {
+    if (command) {
       title += href;
     }
+
+    const showInputClassName = `hidden ${command ? 'visible' : ''}`;
+    const showExampleClassName = `hidden ${!command ? 'visible' : ''}`;
+
     return (
       <div id="root">
         <Head>
@@ -80,19 +108,30 @@ export default class extends React.Component {
             autoComplete="off"
             onChange={this.onChange}
           >
-            {
-              arg.map(arg => <input type="hidden" name="arg" value={arg} />)
-            }
             <p>
               <label>
                 <input
+                  ref="command"
                   type="text"
                   autoFocus="on"
+                  className="command"
                   defaultValue={this.state.command}
                   placeholder="Enter a Command"
                 />
               </label>
             </p>
+            <div className="bottom">
+              <div className={showExampleClassName}>
+                <a href="#" onClick={this.showExample}>(Show me an example…)</a>
+              </div>
+              <div className={showInputClassName}>
+                <label>
+                  Add <code>STDIN</code>?{' '}
+                  <input ref="showInput" type="checkbox" />
+                </label>
+              </div>
+            </div>
+            {arg.map(arg => <input type="hidden" name="arg" value={arg} />)}
           </form>
         </div>
 
@@ -124,11 +163,43 @@ export default class extends React.Component {
             font-size: 3em;
           }
 
-          input {
+          code {
+            position: relative;
+            top: -0.11em;
+          }
+
+          .command {
             background-color: transparent;
             border: none;
             color #fff;
             text-align: center;
+            font-size: 0.8em;
+            font-weight: 100;
+            width: 100%;
+          }
+
+          .bottom {
+            position: relative;
+            min-height: 2em;
+            text-align: left;
+            font-size: 0.9em;
+          }
+
+          .bottom > div {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+          }
+
+          .hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out 0s;
+          }
+
+          .visible {
+            opacity: 1;
+            pointer-events: initial;
           }
         `}</style>
 
@@ -147,6 +218,10 @@ export default class extends React.Component {
             height: 100%;
             margin: 0;
             padding: 0;
+          }
+
+          *:focus {
+            outline: none;
           }
         `}</style>
       </div>

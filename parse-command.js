@@ -13,15 +13,21 @@ function parse(command) {
     index = m.index + m[0].length;
     //console.log(part, index);
     if (/\s+/.test(m[0])) {
-      // whitespace, push current arg to args;
-      args.push(currentArg);
+      // whitespace, push current arg to args
+      if (args.length > 0 || currentArg.length) {
+        args.push(currentArg);
+      }
       currentArg = '';
-    } else {
+    } else if (m[0][0] === '\\') {
+      // escape character, add next value to current arg
+      currentArg += m[0].substring(1);
     }
   }
   const lastPart = command.substring(index);
   currentArg += lastPart;
-  args.push(currentArg);
+  if (currentArg.length > 0) {
+    args.push(currentArg);
+  }
   //console.log(lastPart, index);
   return args;
 }
@@ -32,3 +38,6 @@ exports.default = parse;
 
 //console.log(parse('echo foo bar'));
 assert.deepEqual(parse('echo foo bar'), ['echo', 'foo', 'bar']);
+assert.deepEqual(parse('echo foo bar   '), ['echo', 'foo', 'bar']);
+assert.deepEqual(parse(' echo foo bar '), ['echo', 'foo', 'bar']);
+assert.deepEqual(parse('echo \\\' \\"'), ['echo', '\'', '"']);
