@@ -21,8 +21,12 @@ export default class extends React.Component {
 
   constructor(...args) {
     super(...args);
+    this.metaKey = false;
     this.state = { host: 'nexec.n8.io', command: '' };
     this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.showExample = this.showExample.bind(this);
     if (typeof location !== 'undefined') {
       const query = qs.parse(location.search.substring(1));
@@ -31,6 +35,11 @@ export default class extends React.Component {
       });
     }
     debug('Initial state: %o', this.state);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.onKeyUp, false);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillReceiveProps({url: {query}}) {
@@ -61,6 +70,27 @@ export default class extends React.Component {
     Router.replace(page, as, {shallow: true});
   }
 
+  onKeyUp(e) {
+    this.metaKey = false;
+  }
+
+  onKeyDown(e) {
+    this.metaKey = e.metaKey;
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    if (this.metaKey) {
+      window.open(
+        this.refs.link.href,
+        'nexec',
+        'menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes,width=500,height=600'
+      );
+    } else {
+      window.location = this.refs.link.href;
+    }
+  }
+
   async onChange(e) {
     const command = this.refs.command.value;
     const query = {};
@@ -77,7 +107,6 @@ export default class extends React.Component {
     if (stdin) query.stdin = stdin;
     if (stdin_url) query.stdin_url = stdin_url;
     const queryStr = qs.stringify(query);
-    console.log({queryStr, query});
     const href = `/${cmd}${queryStr ? '?'+queryStr : ''}`
     let title = `${this.state.host}`;
     if (command) {
@@ -100,13 +129,12 @@ export default class extends React.Component {
         </Head>
 
         <div id="content">
-          <h1><a href={href}>{title}</a></h1>
+          <h1><a href={href} ref="link" onClick={this.onSubmit}>{title}</a></h1>
           <p>Execute a remote command over HTTP.</p>
           <form
-            action={`/${cmd}`}
-            method="GET"
             autoComplete="off"
             onChange={this.onChange}
+            onSubmit={this.onSubmit}
           >
             <p>
               <label>
@@ -131,7 +159,6 @@ export default class extends React.Component {
                 </label>
               </div>
             </div>
-            {arg.map(arg => <input type="hidden" name="arg" value={arg} />)}
           </form>
         </div>
 

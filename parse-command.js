@@ -8,11 +8,9 @@ function parse(command) {
   let index = 0;
   const re = /(\s+|\\.|\"|\')/g;
   while (m = re.exec(command)) {
-    //console.log(m);
     const part = command.substring(index, m.index);
     currentArg += part;
     index = m.index + m[0].length;
-    //console.log(part, index);
     if (/\s+/.test(m[0])) {
       // whitespace, push current arg to args unless inside a quoted string
       if (quote) {
@@ -48,7 +46,6 @@ function parse(command) {
   if (currentArg.length > 0) {
     args.push(currentArg);
   }
-  //console.log(lastPart, index);
   return args;
 }
 
