@@ -32,21 +32,22 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-curl_args=()
+curl_args=("-sS" "--no-buffer" "--http1.0")
 if [ ! -t 0 ]; then
   curl_args+=("--data-binary" "@-" "--header" "Transfer-Encoding: chunked")
 fi
 
 nexec_host="${NEXEC_HOST-https://nexec.n8.io}"
 query="$(join_by '&' ${args[@]+"${args[@]}"})"
+url="${nexec_host}/${cmd}?${query}"
 
-exec 6>&1 # save stdout to fd 6
-exit_code=$(curl \
-  -sS \
-  --no-buffer \
-  --http1.0 \
-  ${curl_args[@]+"${curl_args[@]}"} \
-  ${NEXEC_CURL_ARGS-} \
-  "${nexec_host}/${cmd}?${query}" | tee >(awk 'NR>1{print buf}{buf = $0}' >&6) | tail -n 1)
-exec 6>&- # close fd 6
+# The `curl` command output goes to fd 3
+exec 3< <(curl "${curl_args[@]}" ${NEXEC_CURL_ARGS-} "${url}")
+
+# fd 4 sends everything except the very last line to stdout
+exec 4> >(awk 'NR>1{print buf}{buf = $0}')
+
+# The `tee` command dumps the curl output to fd 4,
+# and only the last line goes to the `exit_code` variable
+exit_code="$(tee <&3 /dev/fd/4 | tail -n 1)"
 exit "${exit_code}"
