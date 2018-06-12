@@ -1,4 +1,4 @@
-FROM tootallnate/bashttpd:1.2.0 as base
+FROM tootallnate/bashttpd:1.3.0 as base
 
 # Build the static export files
 FROM mhart/alpine-node:10.3.0 as static
