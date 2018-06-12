@@ -1,4 +1,4 @@
-FROM tootallnate/bashttpd:1.1.2 as base
+FROM tootallnate/bashttpd:1.2.0 as base
 
 # Build the static export files
 FROM mhart/alpine-node:10.3.0 as static
@@ -10,11 +10,10 @@ RUN npm run build
 
 FROM base
 # Install some extra CLI tools to invoke
-USER root
 RUN apk add --no-cache jq curl libstdc++
 RUN curl -Ls install-node.now.sh | sh -s -- --yes --version=10.4.0
-RUN npm install --global --unsafe-perm semver
+RUN npm install --global semver
 
 COPY bashttpd.conf /etc/bashttpd/
 COPY --from=static /usr/src/demo /etc/bashttpd/demo
-USER bashttpd
+USER nobody
