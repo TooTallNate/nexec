@@ -1,0 +1,12 @@
+#!/bin/bash
+# Runs the given command on the remote server.
+#
+# Examples:
+#   $ nexec ls
+#   $ nexec env
+#   $ cat foo.sh | nexec bash
+#   $ echo '{"foo":"bar"}' | nexec jq -r '.foo'
+set -euo pipefail
+eval "`curl -fsSL import.pw`"
+import "import.pw/tootallnate/nexec"
+nexec "$@"
