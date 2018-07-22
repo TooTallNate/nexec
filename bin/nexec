@@ -7,6 +7,7 @@
 #   $ cat foo.sh | nexec bash
 #   $ echo '{"foo":"bar"}' | nexec jq -r '.foo'
 set -euo pipefail
-eval "`curl -fsSL import.pw`"
-import "import.pw/tootallnate/nexec"
+test -f "$HOME/.import.sh" || curl -sfS https://import.pw > "$HOME/.import.sh"
+source "$HOME/.import.sh"
+import "import.pw/tootallnate/nexec@1.0.0"
 nexec "$@"

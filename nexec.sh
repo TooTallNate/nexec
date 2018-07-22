@@ -1,4 +1,4 @@
-import "import.pw/array"
+import "import.pw/array@1.0.0"
 import "import.pw/querystring@1.0.0"
 
 # Runs the given command on the remote server.
