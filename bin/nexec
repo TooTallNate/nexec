@@ -9,5 +9,5 @@
 set -euo pipefail
 test -f "$HOME/.import.sh" || curl -sfS https://import.pw > "$HOME/.import.sh"
 source "$HOME/.import.sh"
-import "import.pw/tootallnate/nexec@1.0.0"
+import "import.pw/tootallnate/nexec@1.1.0"
 nexec "$@"
