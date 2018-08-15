@@ -1,7 +1,6 @@
 {
   "name": "nexec",
   "version": "0.0.0",
-  "bin": "./bin/nexec",
   "scripts": {
     "build": "next build && next export -o demo"
   },
