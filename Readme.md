@@ -8,7 +8,7 @@ Execute a command remotely over HTTPS.
 #!/bin/sh
 eval "`curl -sfLS import.pw`"
 
-import "tootallnate.sh/nexec@1.1.0"
+import tootallnate/nexec@1.1.0
 
 nexec bash --version
 ```
