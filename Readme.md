@@ -5,9 +5,7 @@ Execute a command remotely over HTTPS.
 ## Example
 
 ```bash
-#!/bin/sh
-eval "`curl -sfLS import.pw`"
-
+#!/usr/bin/env import -s bash
 import tootallnate/nexec@1.1.0
 
 nexec bash --version
