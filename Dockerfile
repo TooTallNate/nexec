@@ -12,7 +12,7 @@ FROM base
 # Install some extra CLI tools to invoke
 RUN apk add --no-cache jq curl libstdc++
 RUN curl -Ls install-node.now.sh | sh -s -- --yes --version=10.4.0
-RUN curl -sfSL import.pw > /usr/bin/import
+RUN curl -sfSL import.pw > /usr/bin/import && chmod +x /usr/bin/import
 RUN npm install --global --unsafe-perm=true semver yaml-cli
 
 COPY bashttpd.conf /etc/bashttpd/
