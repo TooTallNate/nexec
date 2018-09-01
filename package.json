@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "description": "Execute a command remotely over HTTPS",
   "scripts": {
-    "build": "next build && next export -o demo"
+    "dev": "micro server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production micro server.js"
   },
   "repository": {
     "type": "git",
@@ -15,9 +17,13 @@
     "url": "https://github.com/TooTallNate/nexec/issues"
   },
   "homepage": "https://github.com/TooTallNate/nexec#readme",
-  "devDependencies": {
+  "dependencies": {
+    "buffer-to-stream": "^1.0.0",
     "debug": "^3.1.0",
-    "next": "^6.0.3",
+    "execa": "^1.0.0",
+    "is-bot": "0.0.1",
+    "next": "^7.0.0-canary.8",
+    "node-fetch": "^2.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0"
   }

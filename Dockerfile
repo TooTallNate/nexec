@@ -1,20 +1,19 @@
-FROM tootallnate/bashttpd:1.3.0 as base
-
-# Build the static export files
-FROM mhart/alpine-node:10.3.0 as static
+FROM mhart/alpine-node:10 as base
 WORKDIR /usr/src
-COPY package.json next.config.js ./
-RUN npm install
 COPY . .
-RUN npm run build
+RUN yarn install --production && \
+    yarn run build && \
+    rm -rf ~/.npm* ~/.yarn*
 
-FROM base
+FROM mhart/alpine-node:base-10
+
 # Install some extra CLI tools to invoke
 RUN apk add --no-cache jq curl libstdc++
-RUN curl -Ls install-node.now.sh | sh -s -- --yes --version=10.4.0
 RUN curl -sfSL import.pw > /usr/bin/import && chmod +x /usr/bin/import
-RUN npm install --global --unsafe-perm=true semver yaml-cli
 
-COPY bashttpd.conf /etc/bashttpd/
-COPY --from=static /usr/src/demo /etc/bashttpd/demo
+WORKDIR /usr/src
+ENV NODE_ENV="production"
+COPY --from=base /usr/src .
 USER nobody
+EXPOSE 3000
+CMD ["node", "./node_modules/.bin/micro", "server.js"]

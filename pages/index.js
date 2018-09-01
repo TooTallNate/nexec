@@ -15,8 +15,6 @@ const examples = [
   { command: 'jq -r .[].version', stdin_url: 'https://nodejs.org/dist/index.json' },
 ];
 
-
-
 export default class extends React.Component {
   static getInitialProps() {
     return {};
