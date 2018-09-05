@@ -22,9 +22,17 @@
     "debug": "^3.1.0",
     "execa": "^1.0.0",
     "is-bot": "0.0.1",
+    "micro": "^9.3.3",
+    "ms": "^2.1.1",
+    "ndjson": "^1.5.0",
+    "netstring-stream": "^1.0.1",
     "next": "^7.0.0-canary.8",
     "node-fetch": "^2.2.0",
+    "node-pty": "Microsoft/node-pty#e480ad37225b6be58473a12386a88f15cdc993fd",
+    "p-event": "^2.1.0",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "through2": "^2.0.3",
+    "yn": "^2.0.0"
   }
 }
