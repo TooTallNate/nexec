@@ -5,7 +5,9 @@ Execute a command remotely over HTTPS.
 ## Example
 
 ```bash
-#!/usr/bin/env import -s bash
+#!/bin/bash
+. "$(which import)"
+
 import tootallnate/nexec@1.1.0
 
 nexec whoami
