@@ -62,7 +62,7 @@ export default class extends React.Component {
   setCommand(queryObj) {
     const query = qs.stringify(queryObj);
     const page = `/${query ? '?'+query : ''}`;
-    const as = `${location.pathname}?${query}`;
+    const as = `${location.pathname}${query ? '?'+query : ''}`;
 
     const { command = '' } = queryObj;
     if (this.refs.command.value !== command) {
@@ -111,7 +111,7 @@ export default class extends React.Component {
     if (stdin) query.stdin = stdin;
     if (stdin_url) query.stdin_url = stdin_url;
     const queryStr = qs.stringify(query);
-    const href = `/${cmd}${queryStr ? '?'+queryStr : ''}`
+    const href = `/api/${cmd}${queryStr ? '?'+queryStr : ''}`
     let title = `${this.state.host}`;
     if (command) {
       title += href;

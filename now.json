@@ -1,7 +1,11 @@
 {
-  "type": "docker",
+  "version": 2,
   "alias": "nexec.n8.io",
-  "features": {
-    "cloud": "v2"
-  }
+  "builds": [
+    { "src": "api.sh", "use": "@now/bash" },
+    { "src": "package.json", "use": "@now/next" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api.sh" }
+  ]
 }

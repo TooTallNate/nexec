@@ -2,9 +2,6 @@
   "name": "nexec",
   "version": "0.0.0",
   "description": "Execute a command remotely over HTTPS",
-  "scripts": {
-    "build": "next build && next export -o demo"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TooTallNate/nexec.git"
@@ -15,10 +12,7 @@
     "url": "https://github.com/TooTallNate/nexec/issues"
   },
   "homepage": "https://github.com/TooTallNate/nexec#readme",
-  "devDependencies": {
-    "debug": "^3.1.0",
-    "next": "^6.0.3",
-    "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+  "dependencies": {
+    "debug": "^3.1.0"
   }
 }

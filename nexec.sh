@@ -1,5 +1,5 @@
-import "import.pw/array@1.0.0"
-import "import.pw/querystring@1.0.0"
+import "array@1.0.0"
+import "querystring@1.0.0"
 
 # Runs the given command on the remote server.
 #
@@ -36,6 +36,5 @@ nexec() {
   # The `tee` command dumps the curl output to fd 4,
   # and only the last line goes to the `exit_code` variable
   local exit_code="$(tee <&3 /dev/fd/4 | tail -n 1)"
-  #echo "Exit code: '${exit_code}'"
   return "${exit_code}"
 }
